@@ -69,7 +69,7 @@ migrations = {
         },
         'server': {
             'type': 'git',
-            'url': 'git://github.com/OpenUpgrade/OpenUpgrade.git',
+            'url': 'git://github.com/jamotion/OpenUpgrade.git',
             'branch': '8.0',
             'addons_dir': os.path.join('openerp', 'addons'),
             'root_dir': os.path.join(''),
