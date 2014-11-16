@@ -564,7 +564,8 @@ def migrate(cr, version):
     migrate_stock_warehouse_orderpoint(cr)
     migrate_product_supply_method(cr)
     migrate_procurement_order(cr)
-    migrate_stock_qty(cr, pool, uid)
+    #JAMO: TODO: reactivate!
+    #migrate_stock_qty(cr, pool, uid)
     migrate_stock_production_lot(cr)
 
     # Initiate defaults before filling.
