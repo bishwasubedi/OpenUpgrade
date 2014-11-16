@@ -90,7 +90,7 @@ def migrate_product_supply_method(cr):
     procure_method_legacy = openupgrade.get_legacy_name('supply_method')
     if mto_route_id:
         product_ids = []
-        cr.execute("""SELECT id FROM product_template WHERE %s = %s""" % (
+        cr.execute("""SELECT id FROM product_template WHERE %s = '%s'""" % (
             procure_method_legacy, 'buy'))
         product_ids = [res[0] for res in cr.fetchall()]
 
