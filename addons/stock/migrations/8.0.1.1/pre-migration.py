@@ -64,7 +64,6 @@ column_renames = {
     ],
     'stock_warehouse_orderpoint': [
         ('product_uom', None),
-        ('procurement_id' openupgrade.get_legacy_name('procurement_id')),
     ],
 }
 
