@@ -26,6 +26,7 @@ def copy_database(conn_parms):
     
     if conn_parms['template']:
         conn_parms['database'] = conn_parms['template']
+        del conn_parms['template']
         
     conn = psycopg2.connect(**conn_parms)
     conn_parms['database'] = db_old
