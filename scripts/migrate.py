@@ -283,7 +283,7 @@ for version in options.migrations.split(','):
                     lightweight=True)
             elif addon_config_type == 'git':
                 print 'getting ' + addon_config['url']
-                os.system('git clone --branch %(branch)s --single-branch '
+                os.system('git clone --branch %(branch)s '
                           '--depth=1 %(url)s %(target)s' %
                           {
                               'branch': addon_config.get('branch', 'master'),
