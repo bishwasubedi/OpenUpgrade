@@ -23,7 +23,13 @@ def copy_database(conn_parms):
     if conn_parms.get('host') == 'False':
         del conn_parms['host']
         del conn_parms['port']
+    
+    if conn_parms['template']:
+        conn_parms['database'] = conn_parms['template']
+        
     conn = psycopg2.connect(**conn_parms)
+    conn_parms['database'] = db_old
+    
     conn.set_isolation_level(psycopg2.extensions.ISOLATION_LEVEL_AUTOCOMMIT)
     cur = conn.cursor()
     cur.execute('drop database if exists "%(db)s"' % {'db': db_new})
@@ -183,7 +189,10 @@ if not db_name or db_name == '' or db_name.isspace()\
     parser.print_help()
     sys.exit()
 
+db_template = config.get('options', 'db_template') or db_name
+
 conn_parms['database'] = db_name
+conn_parms['template'] = db_template
 
 if options.add:
     merge_migrations = {}
