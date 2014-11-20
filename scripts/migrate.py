@@ -36,6 +36,8 @@ def copy_database(conn_parms):
     cur.execute('drop database if exists "%(db)s"' % {'db': db_new})
     try:
         print "Copying the database using 'with template'"
+        cur.execute("select pg_terminate_backend(pid) from pg_stat_activity where datname = '%(db)s'" %
+                    {'db':db_old})
         cur.execute('create database "%(db_new)s" with template "%(db_old)s"' %
                     {'db_new': db_new, 'db_old': db_old})
         cur.close()
