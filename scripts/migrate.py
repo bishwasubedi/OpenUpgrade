@@ -23,12 +23,21 @@ def copy_database(conn_parms):
     if conn_parms.get('host') == 'False':
         del conn_parms['host']
         del conn_parms['port']
+    
+    if conn_parms['template']:
+        conn_parms['database'] = conn_parms['template']
+        del conn_parms['template']
+        
     conn = psycopg2.connect(**conn_parms)
+    conn_parms['database'] = db_old
+    
     conn.set_isolation_level(psycopg2.extensions.ISOLATION_LEVEL_AUTOCOMMIT)
     cur = conn.cursor()
     cur.execute('drop database if exists "%(db)s"' % {'db': db_new})
     try:
         print "Copying the database using 'with template'"
+        cur.execute("select pg_terminate_backend(pid) from pg_stat_activity where datname = '%(db)s'" %
+                    {'db':db_old})
         cur.execute('create database "%(db_new)s" with template "%(db_old)s"' %
                     {'db_new': db_new, 'db_old': db_old})
         cur.close()
@@ -69,7 +78,7 @@ migrations = {
         },
         'server': {
             'type': 'git',
-            'url': 'git://github.com/OpenUpgrade/OpenUpgrade.git',
+            'url': 'git://github.com/jamotion/OpenUpgrade.git',
             'branch': '8.0',
             'addons_dir': os.path.join('openerp', 'addons'),
             'root_dir': os.path.join(''),
@@ -183,7 +192,10 @@ if not db_name or db_name == '' or db_name.isspace()\
     parser.print_help()
     sys.exit()
 
+db_template = config.get('options', 'db_template') or db_name
+
 conn_parms['database'] = db_name
+conn_parms['template'] = db_template
 
 if options.add:
     merge_migrations = {}
@@ -283,7 +295,7 @@ for version in options.migrations.split(','):
                     lightweight=True)
             elif addon_config_type == 'git':
                 print 'getting ' + addon_config['url']
-                os.system('git clone --branch %(branch)s --single-branch '
+                os.system('git clone --branch %(branch)s '
                           '--depth=1 %(url)s %(target)s' %
                           {
                               'branch': addon_config.get('branch', 'master'),
